@@ -23,17 +23,17 @@ router.get('/login', function(req, res, next) {
 
 router.post('/login',
   passport.authenticate('local', {failureRedirect:'/users/login', failureFlash: 'Invalid username or password'}),
-  function(req, res) {
+  (req, res) => {
     req.flash('success', 'You are now logged in');
     res.redirect('/');
 });
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser( (user, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser(function(id, done) {
-  User.getUserById(id, function(err, user) {
+passport.deserializeUser( (id, done) => {
+  User.getUserById(id, (err, user) => {
     done(err, user);
   });
 });
@@ -53,7 +53,6 @@ passport.use(new LocalStrategy( (username, password, done) => {
         return done(null, false, {message: 'Invalid Password'})
       }
     });
-
   });
 }));
 
@@ -85,7 +84,7 @@ router.post('/register', upload.single('profileimage'), function(req, res, next)
   var errors = req.validationErrors();
   if(errors) {
     res.render('register', {
-      errors
+      errors: errors
     })
   }else{
     var newUser = new User({
@@ -107,6 +106,12 @@ router.post('/register', upload.single('profileimage'), function(req, res, next)
     res.redirect('/');
   }
   
+});
+
+router.get('/logout', (req, res) => {
+  req.logout();
+  req.flash('success', 'You are now log out');
+  res.redirect('/users/login')
 });
 
 module.exports = router;

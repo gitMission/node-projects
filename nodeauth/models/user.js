@@ -37,17 +37,16 @@ module.exports.getUserByUsername = (username, callback) => {
 }
 
 module.exports.comparePassword = (candidatePassword, hash, callback) => {
-    bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
+    bcrypt.compare(candidatePassword, hash, (err, isMatch) => {
         callback(null, isMatch);
     });
 }
 
 module.exports.createUser = (newUser, callback) => {
-    bcrypt.genSalt(10, function(err, salt) {
-        bcrypt.hash(newUser.password, salt, function(err, hash) {
+    bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(newUser.password, salt, (err, hash) => {
             newUser.password = hash;
             newUser.save(callback);
         });
     });
-    newUser.save(callback);
 }
